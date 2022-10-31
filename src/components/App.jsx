@@ -1,21 +1,55 @@
 import { Searchbar } from './Searchbar/Searchbar';
-import axios from 'axios';
+
 import { Component } from 'react';
+import { ImageGallery } from './ImageGallery/ImageGallery';
+import axios from 'axios';
+import { Loader } from './Loader/Loader';
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
-axios.defaults.headers.common['x-api-key'] = process.env.REACT_APP_API_KEY;
+
 export class App extends Component {
   state = {
     search: '',
+    searchGallery: null,
+    loading: false,
+    error: null,
   };
+  async componentDidUpdate() {
+    try {
+      this.setState({ loading: true });
+      if (!this.state.search) return;
+
+      const response = await axios.get('', {
+        params: {
+          key: process.env.REACT_APP_API_KEY,
+          q: this.state.search,
+          per_page: 12,
+        },
+      });
+      console.log(response.data);
+      this.setState({
+        searchGallery: response.data.hits,
+        search: null,
+        loading: false,
+      });
+    } catch (error) {
+      this.setState({ error: 'Sorry, please reload' });
+    }
+  }
   formSubmitHandler = data => {
     this.setState({ search: data });
-    console.log(`'app-data'`, data);
   };
+
   render() {
     return (
       <div>
         <Searchbar onSubmitForm={this.formSubmitHandler} />
+        {this.state.loading && <Loader />}
+        {this.state.searchGallery && (
+          <ImageGallery searchGallery={this.state.searchGallery} />
+        )}
+
+        {this.state.error && <div>{this.state.error}</div>}
       </div>
     );
   }
