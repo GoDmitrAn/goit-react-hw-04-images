@@ -1,6 +1,6 @@
 import { Bars } from 'react-loader-spinner';
 
-export const Loader = () => {
+export const Loader = ({ visible }) => {
   return (
     <div className="loader-wrapper">
       <Bars
@@ -10,7 +10,7 @@ export const Loader = () => {
         ariaLabel="bars-loading"
         wrapperStyle={{}}
         wrapperClass=""
-        visible={true}
+        visible={visible}
       />
     </div>
   );

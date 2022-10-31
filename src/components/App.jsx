@@ -4,6 +4,7 @@ import { Component } from 'react';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import axios from 'axios';
 import { Loader } from './Loader/Loader';
+import { LoadMoreBtn } from './Button/Button';
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 
@@ -16,7 +17,9 @@ export class App extends Component {
   };
   async componentDidUpdate() {
     try {
-      if (!this.state.search) return;
+      if (!this.state.search) {
+        return;
+      }
 
       const response = await axios.get('', {
         params: {
@@ -26,6 +29,10 @@ export class App extends Component {
         },
       });
       console.log(response.data);
+      if (response.data.total === 0) {
+        this.setState({ searchGallery: null, loading: false });
+        return;
+      }
       this.setState({
         searchGallery: response.data.hits,
         search: null,
@@ -36,16 +43,23 @@ export class App extends Component {
     }
   }
   formSubmitHandler = data => {
+    if (!data) {
+      this.setState({ loading: false, searchGallery: null });
+      return;
+    }
+
     this.setState({ search: data, loading: true });
   };
-
   render() {
     return (
       <div>
         <Searchbar onSubmitForm={this.formSubmitHandler} />
-        {this.state.loading && <Loader />}
+        {this.state.loading && <Loader visible={this.state.loading} />}
         {this.state.searchGallery && (
-          <ImageGallery searchGallery={this.state.searchGallery} />
+          <div>
+            <ImageGallery searchGallery={this.state.searchGallery} />
+            <LoadMoreBtn>Load more</LoadMoreBtn>
+          </div>
         )}
 
         {this.state.error && <div>{this.state.error}</div>}
