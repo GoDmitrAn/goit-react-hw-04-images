@@ -16,7 +16,6 @@ export class App extends Component {
   };
   async componentDidUpdate() {
     try {
-      this.setState({ loading: true });
       if (!this.state.search) return;
 
       const response = await axios.get('', {
@@ -37,7 +36,7 @@ export class App extends Component {
     }
   }
   formSubmitHandler = data => {
-    this.setState({ search: data });
+    this.setState({ search: data, loading: true });
   };
 
   render() {
