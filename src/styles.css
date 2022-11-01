@@ -169,8 +169,11 @@ img {
 }
 
 .Modal {
+  width: 400px;
+  height: 400px;
   max-width: calc(100vw - 48px);
   max-height: calc(100vh - 24px);
+  background-color: #fff;
 }
 
 /*

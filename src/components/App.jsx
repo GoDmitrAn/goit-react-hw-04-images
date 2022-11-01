@@ -5,6 +5,7 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import axios from 'axios';
 import { Loader } from './Loader/Loader';
 import { LoadMoreBtn } from './Button/Button';
+import { Modal } from './Modal/Modal';
 
 axios.defaults.baseURL = 'https://pixabay.com/api';
 
@@ -15,6 +16,7 @@ export class App extends Component {
     loading: false,
     error: null,
     page: 1,
+    showModal: false,
   };
   async componentDidUpdate(prevProps, prevState) {
     const { search, page, searchGallery } = this.state;
@@ -60,7 +62,13 @@ export class App extends Component {
       this.setState({ error: 'Sorry, please reload' });
     }
   }
+
   galleryPages = 1;
+  toogleModal = () => {
+    this.setState(state => ({
+      showModal: !state.ShowModal,
+    }));
+  };
   formSubmitHandler = data => {
     if (!data) {
       this.setState({ loading: false, searchGallery: null });
@@ -77,10 +85,12 @@ export class App extends Component {
     }));
   };
   render() {
-    const { loading, searchGallery, error, page } = this.state;
+    const { loading, searchGallery, error, page, showModal } = this.state;
     return (
       <div>
-        <Searchbar onSubmitForm={this.formSubmitHandler} />
+        {showModal && <Modal />}
+
+        {/* <Searchbar onSubmitForm={this.formSubmitHandler} />
         {loading && <Loader visible={loading} />}
         {searchGallery && (
           <div>
@@ -93,7 +103,7 @@ export class App extends Component {
           false
         )}
 
-        {error && <div>{error}</div>}
+        {error && <div>{error}</div>} */}
       </div>
     );
   }
