@@ -18,6 +18,10 @@ export class App extends Component {
     page: 1,
     showModal: false,
   };
+  modalState = {
+    imgUrl: '',
+    imgAlt: '',
+  };
   async componentDidUpdate(prevProps, prevState) {
     const { search, page, searchGallery } = this.state;
     if (!search) {
@@ -64,11 +68,28 @@ export class App extends Component {
   }
 
   galleryPages = 1;
-  toggleModal = () => {
+  toggleModal = e => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
     }));
     console.log('tooogggle modal');
+    if (!this.state.showModal) {
+      console.log(e.target.id);
+      this.getBigImage(e.target.id);
+    }
+  };
+  getBigImage = async imageId => {
+    try {
+      const response = await axios.get('/?', {
+        params: {
+          key: process.env.REACT_APP_API_KEY,
+          id: imageId,
+        },
+      });
+      console.log(response.data);
+    } catch {
+      this.setState({ error: 'Sorry, please reload' });
+    }
   };
   formSubmitHandler = data => {
     if (!data) {
