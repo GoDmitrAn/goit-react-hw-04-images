@@ -64,10 +64,11 @@ export class App extends Component {
   }
 
   galleryPages = 1;
-  toogleModal = () => {
-    this.setState(state => ({
-      showModal: !state.ShowModal,
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
     }));
+    console.log('tooogggle modal');
   };
   formSubmitHandler = data => {
     if (!data) {
@@ -88,13 +89,16 @@ export class App extends Component {
     const { loading, searchGallery, error, page, showModal } = this.state;
     return (
       <div>
-        {showModal && <Modal />}
+        {showModal && <Modal onClose={this.toggleModal} />}
 
-        {/* <Searchbar onSubmitForm={this.formSubmitHandler} />
+        <Searchbar onSubmitForm={this.formSubmitHandler} />
         {loading && <Loader visible={loading} />}
         {searchGallery && (
           <div>
-            <ImageGallery searchGallery={searchGallery} />
+            <ImageGallery
+              searchGallery={searchGallery}
+              toggleModal={this.toggleModal}
+            />
           </div>
         )}
         {searchGallery && page < this.galleryPages ? (
@@ -103,7 +107,7 @@ export class App extends Component {
           false
         )}
 
-        {error && <div>{error}</div>} */}
+        {error && <div>{error}</div>}
       </div>
     );
   }

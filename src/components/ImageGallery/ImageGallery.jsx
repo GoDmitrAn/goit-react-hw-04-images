@@ -1,6 +1,6 @@
 import { GalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 
-export const ImageGallery = ({ searchGallery }) => {
+export const ImageGallery = ({ searchGallery, toggleModal }) => {
   return (
     <ul className="ImageGallery">
       {searchGallery.map(item => {
@@ -10,6 +10,7 @@ export const ImageGallery = ({ searchGallery }) => {
             src={item.webformatURL}
             alt={item.tags}
             id={item.id}
+            toggleOnBigImage={toggleModal}
           />
         );
       })}
