@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 export const GalleryItem = ({ id, src, alt, toggleOnBigImage }) => {
   return (
     <li className="ImageGalleryItem">
@@ -10,4 +11,10 @@ export const GalleryItem = ({ id, src, alt, toggleOnBigImage }) => {
       />
     </li>
   );
+};
+GalleryItem.propTypes = {
+  src: PropTypes.string.isRequired,
+  alt: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
+  toggleOnBigImage: PropTypes.func.isRequired,
 };

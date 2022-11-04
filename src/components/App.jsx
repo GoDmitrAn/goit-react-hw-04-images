@@ -11,29 +11,32 @@ axios.defaults.baseURL = 'https://pixabay.com/api';
 
 export class App extends Component {
   state = {
-    search: '',
+    search: null,
     searchGallery: null,
     loading: false,
     error: null,
     page: 1,
     showModal: false,
   };
-  modalState = {
-    imgUrl: '',
-    imgAlt: '',
-  };
+
+  imageOnModal = null;
   async componentDidUpdate(prevProps, prevState) {
-    const { search, page, searchGallery } = this.state;
+    const { search, page, searchGallery, loading } = this.state;
     if (!search) {
+      console.log('no-search');
       return;
     }
     if (prevState.search === search && prevState.page === page) {
       return;
     }
-    if (searchGallery && searchGallery.length < 12) {
+
+    if (searchGallery & (this.galleryPages === 1)) {
+      console.log('no more photos');
       return;
     }
-
+    if (!loading) {
+      this.setState({ loading: true });
+    }
     try {
       const response = await axios.get('/?', {
         params: {
@@ -50,6 +53,7 @@ export class App extends Component {
       }
       if (response.data.totalHits > 12) {
         this.galleryPages = Math.ceil(response.data.totalHits / 12);
+        console.log(this.galleryPages);
       }
 
       if (this.state.page > 1) {
@@ -63,6 +67,7 @@ export class App extends Component {
       }
       this.setState({ searchGallery: response.data.hits, loading: false });
     } catch (error) {
+      console.log(error);
       this.setState({ error: 'Sorry, please reload' });
     }
   }
@@ -72,34 +77,31 @@ export class App extends Component {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
     }));
-    console.log('tooogggle modal');
+
     if (!this.state.showModal) {
       console.log(e.target.id);
-      this.getBigImage(e.target.id);
+
+      this.imageOnModal = this.state.searchGallery.find(
+        item => item.id === Number(e.target.id)
+      );
+      console.log(' imageOnModal', this.imageOnModal);
     }
   };
-  getBigImage = async imageId => {
-    try {
-      const response = await axios.get('/?', {
-        params: {
-          key: process.env.REACT_APP_API_KEY,
-          id: imageId,
-        },
-      });
-      console.log(response.data);
-    } catch {
-      this.setState({ error: 'Sorry, please reload' });
-    }
-  };
+
   formSubmitHandler = data => {
     if (!data) {
-      this.setState({ loading: false, searchGallery: null });
       return;
     }
     if (this.state.search === data) {
       return;
     }
-    this.setState({ search: data, loading: true, page: 1 });
+    this.setState({
+      search: data,
+      searchGallery: null,
+      page: 1,
+    });
+
+    this.galleryPages = 1;
   };
   loadMore = () => {
     this.setState(prevState => ({
@@ -110,7 +112,13 @@ export class App extends Component {
     const { loading, searchGallery, error, page, showModal } = this.state;
     return (
       <div>
-        {showModal && <Modal onClose={this.toggleModal} />}
+        {showModal && (
+          <Modal
+            onClose={this.toggleModal}
+            url={this.imageOnModal.largeImageURL}
+            alt={this.imageOnModal.tags}
+          />
+        )}
 
         <Searchbar onSubmitForm={this.formSubmitHandler} />
         {loading && <Loader visible={loading} />}
@@ -122,10 +130,11 @@ export class App extends Component {
             />
           </div>
         )}
-        {searchGallery && page < this.galleryPages ? (
-          <LoadMoreBtn onLoadMore={this.loadMore}>Load more</LoadMoreBtn>
-        ) : (
+        {page === this.galleryPages ||
+        searchGallery & (searchGallery.length < 12) ? (
           false
+        ) : (
+          <LoadMoreBtn onLoadMore={this.loadMore}>Load more</LoadMoreBtn>
         )}
 
         {error && <div>{error}</div>}

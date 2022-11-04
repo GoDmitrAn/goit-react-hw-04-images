@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Bars } from 'react-loader-spinner';
 
 export const Loader = ({ visible }) => {
@@ -14,4 +15,7 @@ export const Loader = ({ visible }) => {
       />
     </div>
   );
+};
+Loader.propTypes = {
+  visible: PropTypes.bool.isRequired,
 };

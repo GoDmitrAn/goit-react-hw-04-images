@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 export const LoadMoreBtn = ({ children, onLoadMore }) => {
   return (
@@ -15,4 +16,7 @@ export const LoadMoreBtn = ({ children, onLoadMore }) => {
       {children}
     </Button>
   );
+};
+LoadMoreBtn.propTypes = {
+  onLoadMore: PropTypes.func.isRequired,
 };

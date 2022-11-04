@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import IconButton from '@mui/material/IconButton';
 import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import { Component } from 'react';
@@ -30,3 +31,6 @@ export class Searchbar extends Component {
     );
   }
 }
+Searchbar.propTypes = {
+  onSubmitForm: PropTypes.func.isRequired,
+};
