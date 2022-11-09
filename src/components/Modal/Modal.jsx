@@ -6,20 +6,20 @@ const modalRoot = document.querySelector('#modal-root');
 const bodyEl = document.body;
 export const Modal = ({ onClose, url, alt }) => {
   useEffect(() => {
+    const handleKeyDown = e => {
+      if (e.code === 'Escape') {
+        console.log('close modal');
+
+        onClose();
+      }
+    };
     window.addEventListener('keydown', handleKeyDown);
     bodyEl.classList.add('no-scroll');
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [onClose]);
 
-  const handleKeyDown = e => {
-    if (e.code === 'Escape') {
-      console.log('close modal');
-
-      onClose();
-    }
-  };
   const handleBackdropClick = e => {
     if (e.currentTarget === e.target) {
       onClose();
